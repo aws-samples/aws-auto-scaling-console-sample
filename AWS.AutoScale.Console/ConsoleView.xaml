@@ -1,0 +1,331 @@
+﻿<Page x:Class="AWS.AutoScale.Console.ConsoleView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AWS.AutoScale.Console.DataBinding"    
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="880"
+	Title="ConsoleView">
+
+    <Page.DataContext>
+        <local:ViewModel />
+    </Page.DataContext>
+    <xctk:BusyIndicator Grid.Row="1" BusyContent="{Binding BusyContent}" IsBusy="{Binding IsBusy}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="34" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Canvas Panel.ZIndex="99" Grid.Row="0" FlowDirection="RightToLeft" Margin="0,-35,35,0" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                <Expander x:Name="reConfiguration" VerticalAlignment="Top">
+                    <Expander.Header>
+                        <StackPanel>
+                            <TextBlock Text="My Environment" FontSize="14"></TextBlock>
+                            <TextBlock FontSize="12">
+                                <Run Text="{Binding EnvironmentDescription, Mode=OneWay}"></Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </Expander.Header>
+                    <Expander.Content>
+                        <Grid Margin="0,0,0,20" Background="#FFEEEEEE" FlowDirection="LeftToRight">
+                            <Border>
+                                <Border.Effect>
+                                    <DropShadowEffect Opacity="0.6" />
+                                </Border.Effect>
+                                <Rectangle Stroke="#FFF9AC25" StrokeThickness="1">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#FFF8F8F8" Offset="0.15"/>
+                                            <GradientStop Color="#FFE9E9E9" Offset="0.75"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Border>
+                            <StackPanel Margin="15">
+                                <TextBlock Text="Set your region and environment type" FontSize="16" Foreground="#FFF9AC25" FontWeight="Bold"></TextBlock>
+                                <StackPanel Margin="0,5,0,0">
+                                    <TextBlock Text="My Region" FontSize="14"></TextBlock>
+                                    <ComboBox Grid.Row="2" x:Name="cboRegion" Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding Regions}" DisplayMemberPath="Name" SelectedItem="{Binding Region, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" SelectionChanged="cboRegion_SelectionChanged" />
+                                </StackPanel>
+                                <StackPanel Margin="0,5,0,0">
+                                    <TextBlock Text="Environment Type" FontSize="14"></TextBlock>
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton x:Name="rbClassic" Content="Classic EC2" GroupName="cbogEnvironment" IsChecked="True" Tag="0"></RadioButton>
+                                        <RadioButton x:Name="rbVpc" Content="Virtual Private Network (VPC)" Margin="40,0,0,0" GroupName="cbogEnvironment" Tag="1"></RadioButton>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel x:Name="spVpc" Margin="0,5,0,0" Visibility="Collapsed">
+                                    <TextBlock Text="Select a VPC" FontSize="14"></TextBlock>
+                                    <ComboBox Grid.Row="2" x:Name="cboVPC" Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding Vpcs}" DisplayMemberPath="VPC.VpcId" SelectedIndex="0" SelectedItem="{Binding SelectedVpc, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" />
+                                </StackPanel>
+                                <Button x:Name="btnCloseConfig" Content="Close" HorizontalAlignment="Right" Width="60" Margin="0,20,0,0" Click="btnCloseConfig_Click"></Button>
+                            </StackPanel>
+                        </Grid>
+                    </Expander.Content>
+                </Expander>
+            </Canvas>
+            <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" BorderBrush="#FFF9AC25" BorderThickness="0,0,0,2">
+                <TextBlock FontSize="22">
+                    <Run Text="{Binding Region.Name, Mode=OneWay}" FontSize="18"></Run>
+                    <Run Text="//" FontWeight="Bold" Foreground="#FFF9AC25"></Run>
+                    <Run Text="{Binding Environment, Mode=OneWay}" FontSize="18"></Run>
+                </TextBlock>
+            </Border>
+            <TabControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
+                <TabItem>
+                    <TabItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="My Auto Scaling Groups" FontSize="15"></TextBlock>
+                                <TextBlock Text="Manage your auto scaling groups."></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TabItem.HeaderTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button x:Name="btnAddASG" Content="Create Auto Scale Group" Width="160" HorizontalAlignment="Right" Height="25" Click="btnAddASG_Click"></Button>
+                        <DataGrid x:Name="dgAutoScaleGroups" Grid.Row="1" ItemsSource="{Binding AutoScalingGroups}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" SelectedItem="{Binding SelectedAutoScalingGroup, Mode=TwoWay}" AutoGenerateColumns="False" HorizontalGridLinesBrush="Gray">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem Header="Update Auto Scaling Group" Click="mnuUpdateAsg"  />
+                                    <MenuItem Header="View Instances" Click="mnuViewAsgInstances"  />
+                                    <MenuItem Header="Add Notification" Click="mnuAddNotification" />
+                                    <Separator />
+                                    <MenuItem Header="Shutdown Auto Scaling Group" Click="mnuShutdownAsg"  />
+                                    <Separator />
+                                    <MenuItem Header="Delete Auto Scaling Group" Click="mnuDeleteAsg" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Name" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding AutoScalingGroup.AutoScalingGroupName}" FontSize="16" Margin="5"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>                                
+                                <DataGridTemplateColumn Header="Min Size">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding AutoScalingGroup.MinSize}" FontSize="16" Margin="5" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Max Size">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding AutoScalingGroup.MaxSize}" FontSize="16" Margin="5" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Running">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch" Background="#FFF9AC25">
+                                                <TextBlock Text="{Binding AutoScalingGroup.Instances.Count}" FontSize="16" Margin="5" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Grid x:Name="gEmptySelectedASG" Grid.Row="3">
+                            <TextBlock Text="Select an Auto Scale Group to view details" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                        <Grid x:Name="gSelectedASG" Grid.Row="3" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock FontSize="14" Foreground="#5A7EAA" Grid.Column="0" Grid.Row="0" Margin="0,0,0,5">
+                            <Run Text="Auto Scaling Group: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.AutoScalingGroupName}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="1" Margin="0,0,0,5">
+                            <Run Text="Launch Configuration: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.LaunchConfigurationName}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="1" Margin="0,0,0,5" TextWrapping="Wrap">
+                            <Run Text="Availability Zones: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.Zones, Mode=OneWay}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="2" Margin="0,0,0,5">
+                            <Run Text="Cooldown: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.DefaultCooldown}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="2" Margin="0,0,0,5">
+                            <Run Text="Healthcheck Grace Period: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.HealthCheckGracePeriod}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="3" Margin="0,0,0,5">
+                            <Run Text="Load Balancers: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.ElasticLoadBalancer, Mode=OneWay}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="3" Margin="0,0,0,5">
+                            <Run Text="Desired Capacity: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.DesiredCapacity}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="4" Margin="0,0,0,5" TextWrapping="Wrap">
+                                <Run Text="Notifications: " FontWeight="Bold"></Run>
+                                <Run Text="{Binding SelectedAutoScalingGroup.Notifications, Mode=OneWay}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="4" Margin="0,0,0,5">
+                            <Run Text="Created: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroup.CreatedTime}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                           
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem>
+                    <TabItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="5">
+                                <TextBlock Text="My Launch Configurations" FontSize="15"></TextBlock>
+                                <TextBlock Text="Manage your launch configurations"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TabItem.HeaderTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button x:Name="btnAddLC" Content="Create Launch Configuration" Width="180" HorizontalAlignment="Right" Height="25" Click="btnAddLC_Click"></Button>
+                        <DataGrid x:Name="dgLaunchConfigs" Grid.Row="1" SelectedIndex="0" ItemsSource="{Binding LaunchConfigurations}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" SelectedItem="{Binding SelectedLaunchConfiguration, Mode=TwoWay}" AutoGenerateColumns="False" HorizontalGridLinesBrush="Gray">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem Header="Delete" Click="mnuDeleteLc" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Name" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding LaunchConfiguration.LaunchConfigurationName}" FontSize="16" Margin="5"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Image Id">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding LaunchConfiguration.ImageId}" FontSize="16" Margin="5"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Instance Type">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding LaunchConfiguration.InstanceType}" FontSize="16" Margin="5"></TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Grid x:Name="gEmptySelectedLC" Grid.Row="3">
+                            <TextBlock Text="Select a Launch Configuration to view details" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                        </Grid>
+                        <Grid x:Name="gSelectedLC" Grid.Row="3" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock FontSize="14" Foreground="#5A7EAA" Grid.Column="0" Grid.Row="0" Margin="0,0,0,5">
+                            <Run Text="Launch Configuration: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.LaunchConfigurationName}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="1" Margin="0,0,0,5">
+                            <Run Text="Ami: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.ImageId}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="1" Margin="0,0,0,5" TextWrapping="Wrap">
+                            <Run Text="Security Groups: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.SecurityGroups, Mode=OneWay}" FontWeight="Normal" ></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="2" Margin="0,0,0,5">
+                            <Run Text="Instance Type: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.InstanceType}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="2" Margin="0,0,0,5">
+                            <Run Text="Key Name: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.KeyName}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="0" Grid.Row="3" Margin="0,0,0,5">
+                            <Run Text="Instance Profile: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.IamInstanceProfile}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12" Grid.Column="2" Grid.Row="3" Margin="0,0,0,5">
+                            <Run Text="Create: " FontWeight="Bold"></Run>
+                            <Run Text="{Binding SelectedLaunchConfiguration.LaunchConfiguration.CreatedTime}" FontWeight="Normal"></Run>
+                            </TextBlock>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Right">
+                <StackPanel Margin="5">
+                    <!--<TextBlock Text="Auto Scaling Group" FontSize="14"></TextBlock>
+                    <ComboBox VerticalAlignment="Center" ItemsSource="{Binding AutoScalingGroups}" DisplayMemberPath="AutoScalingGroupName" SelectedItem="{Binding SelectedAutoScalingGroup, Mode=TwoWay}" Width="150" HorizontalAlignment="Left" />-->
+                    <TextBlock>
+                        <Run Text="Next refresh in"/>
+                        <Run Text="{Binding RefreshCountdown}"/>
+                        <Run Text="seconds." />
+                    </TextBlock>
+                </StackPanel>               
+            </StackPanel>
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Left">
+                <StackPanel Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Refresh Period" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
+                        <ComboBox VerticalAlignment="Center" ItemsSource="{Binding RefreshPeriods}" SelectedItem="{Binding SelectedRefreshPeriod, Mode=TwoWay}" SelectedIndex="0" DisplayMemberPath="Name" Width="150" HorizontalAlignment="Left" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </xctk:BusyIndicator>
+</Page>

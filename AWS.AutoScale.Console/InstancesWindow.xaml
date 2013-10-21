@@ -1,0 +1,64 @@
+﻿<Window x:Class="AWS.AutoScale.Console.InstancesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AWS.AutoScale.Console.DataBinding"    
+        Title="InstancesWindow" Height="230" Width="700" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid x:Name="RootGrid" Margin="5">
+        <Border>
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.6" />
+            </Border.Effect>
+            <Rectangle Stroke="#FFF9AC25" StrokeThickness="1">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF8F8F8" Offset="0.15"/>
+                        <GradientStop Color="#FFE9E9E9" Offset="0.75"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Border>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" FontSize="18">
+                <Run Text="{Binding SelectedAutoScalingGroup.AutoScalingGroupName}"></Run>
+                <Run Text=" | "></Run>
+                <Run x:Name="tbrRI" Text="Running Instances" Foreground="#FFF9AC25" FontWeight="Bold"></Run>
+            </TextBlock>
+            <Button x:Name="CloseButton" Grid.Row="0" Grid.Column="1" Margin="0,-8,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" Click="CloseButton_Click" Height="30">
+                <Button.Content>
+                    <TextBlock Text="X" Foreground="#FF555151" FontWeight="Bold" FontSize="16" Margin="3"></TextBlock>
+                </Button.Content>
+            </Button>
+
+            <ListView ItemsSource="{Binding SelectedAutoScalingGroup.AutoScalingGroup.Instances}" Grid.Row="1" Grid.ColumnSpan="2">
+                <ListView.Resources>
+                    <Style x:Key="HeaderStyle" TargetType="GridViewColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="150" Header="Instance ID" DisplayMemberBinding="{Binding InstanceId}" HeaderContainerStyle="{StaticResource HeaderStyle}" />
+                        <GridViewColumn Width="150" Header="Availability Zone" DisplayMemberBinding="{Binding AvailabilityZone}" HeaderContainerStyle="{StaticResource HeaderStyle}" />
+                        <GridViewColumn Width="150" Header="Health Status" DisplayMemberBinding="{Binding HealthStatus}" HeaderContainerStyle="{StaticResource HeaderStyle}" />
+                        <GridViewColumn Width="170" Header="Lifecycle State" DisplayMemberBinding="{Binding LifecycleState}" HeaderContainerStyle="{StaticResource HeaderStyle}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWS.AutoScale.Console", "AWS.AutoScale.Console\AWS.AutoScale.Console.csproj", "{0BDC73C7-C0C1-478B-9E82-0DAE45208E59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Binaries", "Binaries", "{B9A14C72-06C3-447B-8589-5D8842F0CCEF}"
+	ProjectSection(SolutionItems) = preProject
+		‌Binaries\WPFToolkit.Extended.dll = ‌Binaries\WPFToolkit.Extended.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BDC73C7-C0C1-478B-9E82-0DAE45208E59}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{0BDC73C7-C0C1-478B-9E82-0DAE45208E59}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{0BDC73C7-C0C1-478B-9E82-0DAE45208E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BDC73C7-C0C1-478B-9E82-0DAE45208E59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

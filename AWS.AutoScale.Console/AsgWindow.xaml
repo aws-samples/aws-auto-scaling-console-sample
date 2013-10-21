@@ -1,0 +1,173 @@
+﻿<Window x:Class="AWS.AutoScale.Console.AsgWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AWS.AutoScale.Console.DataBinding"    
+        Title="InstancesWindow" Height="450" Width="550" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid x:Name="RootGrid" Margin="5">
+        <Border>
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.6" />
+            </Border.Effect>
+            <Rectangle Stroke="#FFF9AC25" StrokeThickness="1">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF8F8F8" Offset="0.15"/>
+                        <GradientStop Color="#FFE9E9E9" Offset="0.75"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Border>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" FontSize="18" Foreground="#FFF9AC25" FontWeight="Bold">
+                <Run Text="Auto Scaling Group"></Run>
+                <Run x:Name="rMode"></Run>
+            </TextBlock>
+            <Button x:Name="CloseButton" Grid.Row="0" Grid.Column="1" Margin="0,-8,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" Click="CloseButton_Click" Height="30">
+                <Button.Content>
+                    <TextBlock Text="X" Foreground="#FF555151" FontWeight="Bold" FontSize="16" Margin="3"></TextBlock>
+                </Button.Content>
+            </Button>
+            <Grid x:Name="grAddAsGroup" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="0,5,0,0" Grid.Row="0">
+                    <TextBlock Text="Name" FontSize="14"></TextBlock>
+                    <TextBox x:Name="tbAgName" Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.Name, Mode=TwoWay, ValidatesOnDataErrors=True}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="1">
+                    <TextBlock Text="Launch Configuration" FontSize="14"></TextBlock>
+                    <ComboBox Grid.Row="2" VerticalAlignment="Center" ItemsSource="{Binding LaunchConfigurations}" DisplayMemberPath="LaunchConfiguration.LaunchConfigurationName" SelectedItem="{Binding ASGroup.LaunchConfiguration, Mode=TwoWay, ValidatesOnDataErrors=True}" Width="200" HorizontalAlignment="Left" />
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="2">
+                    <TextBlock Text="Load Balancer" FontSize="14"></TextBlock>
+                    <ComboBox Grid.Row="2" VerticalAlignment="Center" ItemsSource="{Binding LoadBalancers}" DisplayMemberPath="LoadBalancerName" SelectedItem="{Binding ASGroup.LoadBalancer, Mode=TwoWay}" Width="200" HorizontalAlignment="Left" />
+                </StackPanel>
+                <StackPanel x:Name="spAsgAZ" Margin="0,5,0,0" Grid.Row="3" Grid.RowSpan="3">
+                    <TextBlock Text="Availability Zones" FontSize="14"></TextBlock>
+                    <ListBox x:Name="rlbAsZones" Grid.Row="0" Grid.Column="0" MinHeight="110" IsSynchronizedWithCurrentItem="True" SelectionMode="Multiple"
+							            ItemsSource="{Binding Zones}"
+                                        DisplayMemberPath="ZoneName"></ListBox>
+                </StackPanel>
+                <StackPanel x:Name="spAsgSubnets" Margin="0,5,0,0" Grid.Row="3" Grid.RowSpan="3" Visibility="Collapsed">
+                    <TextBlock Text="Vpc Subnets" FontSize="14"></TextBlock>
+                    <ListBox x:Name="rlbAsSubnets" Grid.Row="0" Grid.Column="0" MinHeight="110" SelectionMode="Multiple"
+                                        DisplayMemberPath="DisplayName"></ListBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="Minimum Size" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.MinSize, Mode=TwoWay, ValidatesOnDataErrors=True}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Maximum Size" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.MaxSize, Mode=TwoWay, ValidatesOnDataErrors=True}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="3" Grid.Column="2">
+                    <TextBlock Text="Desired Capacity" FontSize="14"></TextBlock>
+                    <TextBox x:Name="tbAgDesiredCap" Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.DesiredCapacity, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="4" Grid.Column="3">
+                    <TextBlock Text="Health Check Grace Period" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.GracePeriod, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="5" Grid.Column="3">
+                    <TextBlock Text="Default Cooldown" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.Cooldown, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,25,0">
+                    <Button x:Name="rbCreateAG" Content="Create" Margin="0,10,0,0" Width="100" Height="40" HorizontalAlignment="Left" Click="rbCreateAG_Click"></Button>
+                    <Button x:Name="rbCancelAG" Content="Cancel" Margin="20,10,0,0" Width="100" Height="40" HorizontalAlignment="Left" Click="rbCancelAG_Click"></Button>
+                </StackPanel>
+            </Grid>
+            <Grid x:Name="grUpdateAsGroup" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Margin="0,5,0,0" Grid.Row="0">
+                    <TextBlock Text="Name" FontSize="14"></TextBlock>
+                    <TextBlock Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.Name, Mode=OneWay}"></TextBlock>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="1">
+                    <TextBlock Text="Launch Configuration" FontSize="14"></TextBlock>
+                    <ComboBox Grid.Row="2" VerticalAlignment="Center" ItemsSource="{Binding LaunchConfigurations}" DisplayMemberPath="LaunchConfiguration.LaunchConfigurationName" SelectedItem="{Binding ASGroup.LaunchConfiguration, Mode=TwoWay, ValidatesOnDataErrors=True}" Width="200" HorizontalAlignment="Left" />
+                </StackPanel>
+                <StackPanel x:Name="spAsgAZEdit" Margin="0,5,0,0" Grid.Row="2" Grid.RowSpan="3">
+                    <TextBlock Text="Availability Zones" FontSize="14"></TextBlock>
+                    <ListBox x:Name="rlbAsZonesEdit" MinHeight="110" SelectionMode="Multiple"
+							            ItemsSource="{Binding Zones}"
+                                        DisplayMemberPath="ZoneName"></ListBox>
+                </StackPanel>
+                <StackPanel x:Name="spAsgSubnetsEdit" Margin="0,5,0,0" Grid.Row="2" Grid.RowSpan="3" Visibility="Collapsed">
+                    <TextBlock Text="Vpc Subnets" FontSize="14"></TextBlock>
+                    <ListBox x:Name="rlbAsSubnetsEdit" MinHeight="110" SelectionMode="Multiple"
+                                        DisplayMemberPath="DisplayName"></ListBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Text="Minimum Size" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.MinSize, Mode=TwoWay, ValidatesOnDataErrors=True}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="2" Grid.Column="2">
+                    <TextBlock Text="Maximum Size" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.MaxSize, Mode=TwoWay, ValidatesOnDataErrors=True}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="3" Grid.Column="2">
+                    <TextBlock Text="Desired Capacity" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.DesiredCapacity, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="4" Grid.Column="3">
+                    <TextBlock Text="Health Check Grace Period" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.GracePeriod, Mode=TwoWay}"></TextBox>
+                </StackPanel>
+                <StackPanel Margin="0,5,0,0" Grid.Row="5" Grid.Column="3">
+                    <TextBlock Text="Default Cooldown" FontSize="14"></TextBlock>
+                    <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ASGroup.Cooldown, Mode=TwoWay}"></TextBox>
+                </StackPanel>                
+                <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,25,0">
+                    <Button Content="Update" Margin="0,10,0,0" Width="100" Height="40" HorizontalAlignment="Left" Click="rbUpdateAG_Click"></Button>
+                    <Button Content="Cancel" Margin="20,10,0,0" Width="100" Height="40" HorizontalAlignment="Left" Click="rbCancelAG_Click"></Button>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
