@@ -7,15 +7,15 @@ Being elastic is a fundamental principle of AWS. The key is to provision just th
 
 As an example, mywebsite.com is running multiple copies of its web application hosted on identical Amazon EC2 instances, each handling customer requests. These EC2 instances are categorized into an Auto Scaling group and fronted by an Elastic Load Balancer that facilitates load balancing resources across Availability Zones.
 
-![start](https://github.com/awslabs/aws-net-sample/blob/master/images/start.png)
+![start](https://raw.github.com/awslabs/aws-auto-scaling-console-sample/master/images/start.png)
 
 As time moves along, the application load increases and the web server fleet needs to horizontally scale for additional capacity. This can be triggered in a number of ways, such as, by using a schedule you define because you know when the peak is coming or a more likely scenario is the EC2 instance will generate an aggregate metric across the auto scaling fleet that is used to trigger the scale out....let’s say CPU load. So when the fleet average exceeds 80% the group will scale out.
 
-![scale out](https://github.com/awslabs/aws-net-sample/blob/master/images/scaleout.png)
+![scale out](https://raw.github.com/awslabs/aws-auto-scaling-console-sample/master/images/scaleout.png)
 
 Then when CPU average across the fleet reaches less than 30%, the auto scaling group will scale down and the additional instances are removed. 
 
-![scale down](https://github.com/awslabs/aws-net-sample/blob/master/images/scalein.png)
+![scale down](https://raw.github.com/awslabs/aws-auto-scaling-console-sample/master/images/scalein.png)
 
 This helps mywebsite.com make efficient use of its compute resources by automatically scaling in and out based on key metrics for its web server fleet.
 
