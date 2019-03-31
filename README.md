@@ -54,4 +54,5 @@ To run the application, just compile and launch the Auto Scaling Console executa
 
 ## License
 
-This sample application is distributed under the [Amazon Software License](http://aws.amazon.com/asl/ "Amazon Software License").
+This sample application is distributed under the MIT-0 License. See the LICENSE file.
+
